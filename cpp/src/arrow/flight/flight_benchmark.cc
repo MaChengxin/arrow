@@ -178,7 +178,7 @@ arrow::Result<PerformanceResult> RunDoPutTest(FlightClient* client,
   return PerformanceResult{num_records, num_bytes};
 }
 
-Status RunPerformanceTest(FlightClient* client, bool test_put) {
+Status RunPerformanceTest(FlightClient* client, arrow::flight::Location& location, bool test_put) {
   // TODO(wesm): Multiple servers
   // std::vector<std::unique_ptr<TestServer>> servers;
 
@@ -203,10 +203,10 @@ Status RunPerformanceTest(FlightClient* client, bool test_put) {
 
   PerformanceStats stats;
   auto test_loop = test_put ? &RunDoPutTest : &RunDoGetTest;
-  auto ConsumeStream = [&stats, &test_loop](const FlightEndpoint& endpoint) {
+  auto ConsumeStream = [&stats, &test_loop, &location](const FlightEndpoint& endpoint) {
     // TODO(wesm): Use location from endpoint, same host/port for now
     std::unique_ptr<FlightClient> client;
-    RETURN_NOT_OK(FlightClient::Connect(endpoint.locations.front(), &client));
+    RETURN_NOT_OK(FlightClient::Connect(location, &client));
 
     perf::Token token;
     token.ParseFromString(endpoint.ticket.ticket);
@@ -295,7 +295,7 @@ int main(int argc, char** argv) {
   ABORT_NOT_OK(arrow::flight::FlightClient::Connect(location, &client));
   ABORT_NOT_OK(arrow::flight::WaitForReady(client.get()));
 
-  arrow::Status s = arrow::flight::RunPerformanceTest(client.get(), FLAGS_test_put);
+  arrow::Status s = arrow::flight::RunPerformanceTest(client.get(), location, FLAGS_test_put);
 
   if (server) {
     server->Stop();
