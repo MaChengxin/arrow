@@ -42,6 +42,7 @@ gboolean       garrow_buffer_equal        (GArrowBuffer *buffer,
 gboolean       garrow_buffer_equal_n_bytes(GArrowBuffer *buffer,
                                            GArrowBuffer *other_buffer,
                                            gint64 n_bytes);
+const guint8  *garrow_buffer_get_databytes(GArrowBuffer *buffer);
 gboolean       garrow_buffer_is_mutable   (GArrowBuffer *buffer);
 gint64         garrow_buffer_get_capacity (GArrowBuffer *buffer);
 GBytes        *garrow_buffer_get_data     (GArrowBuffer *buffer);
