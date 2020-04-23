@@ -60,8 +60,10 @@ GArrowRecordBatch *garrow_record_batch_slice     (GArrowRecordBatch *record_batc
                                                   gint64 offset,
                                                   gint64 length);
 
-gchar        *garrow_record_batch_to_string      (GArrowRecordBatch *record_batch,
-                                                  GError **error);
+gchar        *garrow_record_batch_to_string      (GArrowRecordBatch *record_batch, GError **error);
+
+GArrowBuffer *GSerializeRecordBatch(GArrowRecordBatch *record_batch);
+
 GArrowRecordBatch *garrow_record_batch_add_column(GArrowRecordBatch *record_batch,
                                                   guint i,
                                                   GArrowField *field,
@@ -102,5 +104,15 @@ GARROW_AVAILABLE_IN_0_17
 GList*
 garrow_record_batch_iterator_to_list(GArrowRecordBatchIterator *iterator,
                                      GError **error);
+
+
+/////////////////////////
+void arrow_builders_start(void);
+GArrowSchema* getSchema(void);
+GArrowRecordBatch* create_arrow_record_batch(gint64 count, GArrowArray *array_qName,GArrowArray *array_flag,GArrowArray *array_rID,GArrowArray *array_beginPos,GArrowArray *array_mapQ,
+GArrowArray* array_cigar,GArrowArray *array_rNextId,GArrowArray *array_pNext,GArrowArray *array_tLen,GArrowArray *array_seq,GArrowArray *array_qual,GArrowArray *array_tags);
+gboolean arrow_builders_append(gint32 builder_id, const gchar *qName, gint32 flag, gint32 rID, gint32 beginPos, gint32 mapQ, const gchar *cigar, gint32 rNextId, gint32 pNext, gint32 tLen, const gchar *seq, const gchar *qual, const gchar *tags);
+GArrowRecordBatch* arrow_builders_finish(gint32 builder_id, gint64 count);
+/////////////////////////
 
 G_END_DECLS
